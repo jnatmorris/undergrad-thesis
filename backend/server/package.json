@@ -1,6 +1,21 @@
 {
-    "name": "server",
+    "name": "undergraduate-thesis-server",
+    "description": "Undergraduate thesis on web-based service for training data generation in trajectory-based molecular machine learning",
     "version": "1.0.0",
+    "private": false,
+    "author": {
+        "email": "jmorris@constructor.university",
+        "name": "Justin Morris"
+    },
+    "keywords": [
+        "Machine Learning",
+        "ML",
+        "Orca",
+        "training data",
+        "socket.io",
+        "typescript",
+        "decimal.js"
+    ],
     "main": "index.js",
     "license": "MIT",
     "scripts": {
@@ -12,9 +27,9 @@
         "nodemon": "^2.0.22",
         "socket.io": "^4.6.1",
         "ts-node": "^10.9.1",
-        "typescript": "^5.0.2"
+        "typescript": "^5.0.4"
     },
     "devDependencies": {
-        "@types/node": "^18.15.1"
+        "@types/node": "^18.15.12"
     }
 }

@@ -1,7 +1,23 @@
 {
-    "name": "thesis",
-    "version": "0.1.0",
-    "private": true,
+    "name": "undergraduate-thesis-client",
+    "version": "1.0.0",
+    "description": "Undergraduate thesis on web-based service for training data generation in trajectory-based molecular machine learning",
+    "author": {
+        "email": "jmorris@constructor.university",
+        "name": "Justin Morris"
+    },
+    "private": false,
+    "keywords": [
+        "Machine Learning",
+        "ML",
+        "Orca",
+        "training data",
+        "socket.io",
+        "typescript",
+        "NextJS",
+        "ThreeJS",
+        "zustand"
+    ],
     "scripts": {
         "dev": "next dev",
         "build": "next build",
@@ -10,22 +26,31 @@
     },
     "dependencies": {
         "@heroicons/react": "^2.0.13",
+        "@react-three/drei": "^9.65.4",
+        "@react-three/fiber": "^8.12.1",
+        "classnames": "^2.3.2",
+        "decimal.js": "^10.4.3",
+        "file-saver": "^2.0.5",
         "next": "13.2.4",
         "react": "18.2.0",
-        "react-cookie": "^4.1.1",
         "react-dom": "18.2.0",
         "react-hot-toast": "^2.4.0",
-        "socket.io-client": "^4.6.1"
+        "socket.io-client": "^4.6.1",
+        "string-to-color": "^2.2.2",
+        "three": "^0.151.3",
+        "zustand": "^4.3.7"
     },
     "devDependencies": {
         "@tailwindcss/typography": "^0.5.9",
-        "@types/node": "^18.15.1",
-        "@types/react": "^18.0.27",
+        "@types/file-saver": "^2.0.5",
+        "@types/node": "^18.15.12",
+        "@types/react": "^18.0.37",
         "@types/react-dom": "^18.0.10",
+        "@types/three": "^0.150.2",
         "autoprefixer": "^10.4.14",
         "eslint": "^8.36.0",
         "eslint-config-next": "^13.2.4",
-        "postcss": "^8.4.21",
+        "postcss": "^8.4.23",
         "prettier": "^2.8.3",
         "prettier-plugin-tailwindcss": "^0.2.4",
         "tailwindcss": "^3.2.4",
