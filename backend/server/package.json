@@ -1,6 +1,7 @@
 {
     "name": "undergraduate-thesis-server",
     "description": "Undergraduate thesis on web-based service for training data generation in trajectory-based molecular machine learning",
+    "license": "MIT",
     "version": "1.0.0",
     "private": false,
     "author": {
@@ -17,7 +18,6 @@
         "decimal.js"
     ],
     "main": "index.js",
-    "license": "MIT",
     "scripts": {
         "dev": "nodemon - exec 'ts-node' index.ts"
     },
@@ -30,6 +30,6 @@
         "typescript": "^5.0.4"
     },
     "devDependencies": {
-        "@types/node": "^18.15.12"
+        "@types/node": "^18.16.0"
     }
 }
