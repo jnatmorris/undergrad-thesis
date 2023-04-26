@@ -1,5 +1,7 @@
 # Bachelor Thesis in Computer Science
 
+This repository holds the front-end, back-end, as well as performance testing files.
+
 ### Thesis topic
 
 Web-based service for training data generation in trajectory-based molecular machine learning
@@ -10,8 +12,6 @@ Web-based service for training data generation in trajectory-based molecular mac
 -   Major: Computer Science
 -   University: Constructor University (Formally Jacobs University)
 -   Thesis Submission: April 26, 2023
-
-This repository holds the front-end, back-end, as well as performance testing files.
 
 ### Supervisor
 
