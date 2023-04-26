@@ -22,6 +22,7 @@ import { existsSync_w } from "./src/wrappers/existsSync_w";
 import { writeFileSync_w } from "./src/wrappers/writeFileSync_w";
 import { appendFileSync_w } from "./src/wrappers/appendFileSync_w";
 import { rmSync_w } from "./src/wrappers/rmSync_w";
+import { execSync_w } from "./src/wrappers/execSync_w";
 config(); // tell dotenv to check for env variables
 
 var serverState: serverState_t = {
@@ -56,13 +57,15 @@ io.on("connection", (socket) => {
     // if a new user connects, let them know of current server state
     socket.emit("haveCurrentJob", JSON.stringify(serverState));
 
-    // when a user requests trajectories, send everyone updated list of them
+    // when a user requests trajectories, send everyone updated list
     socket.on("reqTrajectories", () =>
         reqTraject_h(io, trajectoriesDiskPath_i)
     );
 
     // listen for when users request file with a string
-    socket.on("reqFile", (filePath: string) => reqFile(socket, filePath));
+    socket.on("reqFile", (filePath: string) =>
+        reqFile(socket, filePath, trajectoriesDiskPath_i)
+    );
 
     // listen for if a user requests a new calculation
     socket.on(
@@ -157,7 +160,7 @@ io.on("connection", (socket) => {
                         : workSet;
 
                 // spawn/create a new worker thread to take care of portion of trajectory
-                const workerThread = new Worker("./src/Worker/spawnWorker.ts", {
+                const workerThread = new Worker("./src/worker/spawnWorker.ts", {
                     // pass the thread the required work
                     workerData: {
                         // total number of molecules
@@ -219,7 +222,7 @@ io.on("connection", (socket) => {
                                         JSON.stringify(serverState)
                                     );
 
-                                    existsSync_w(
+                                    execSync_w(
                                         `cd ${trajectoryDirPath_r} && zip -r logFiles.zip logFiles`
                                     );
 
