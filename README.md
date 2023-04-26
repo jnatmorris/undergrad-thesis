@@ -15,4 +15,4 @@ This repository holds the front-end, back-end, as well as performance testing fi
 
 ### Supervisor
 
-Supervisor: Prof. Dr. Peter Zaspel
+Prof. Dr. Peter Zaspel
