@@ -12,6 +12,15 @@ export interface threadDone_t {
     totalNumMolecules: number;
 }
 
+export interface messageInfo_t {
+    header: "S" | "N" | "E" | "C" | "D";
+    message: string;
+}
+
+export interface obj_t {
+    [key: string]: any;
+}
+
 export interface threadRes_t {
     finished: false;
     moleculeNumber: number;
