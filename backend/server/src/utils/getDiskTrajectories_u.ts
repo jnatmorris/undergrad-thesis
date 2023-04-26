@@ -31,7 +31,7 @@ export const getDiskTrajectories_u = (
                 filesInside,
                 numMolecule,
                 uploadDate: birthtime.toISOString(),
-                partialPath: moleculeFolderPath,
+                trajectoryName: trajectoryNameStr,
             };
         }
     });
