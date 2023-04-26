@@ -2,10 +2,10 @@ import { readFileSync } from "fs";
 import { exit } from "process";
 
 // wrapper function to handle errors when reading from a file
-export const readFileSync_w = (path: string): string => {
+export const readFileSync_w = (path: string): Buffer => {
     try {
         // read file from path
-        const readContent = readFileSync(path, "utf-8");
+        const readContent = readFileSync(path);
         return readContent;
     } catch (error) {
         // if error, log to console
