@@ -1,6 +1,5 @@
 import { Worker } from "worker_threads";
-import { writeFileSync, existsSync, appendFileSync } from "fs";
-import { getNumFilesDir } from "./src/utils/getNumFilesDir";
+import { getNumMols_u } from "./src/utils/getNumMols_u";
 import { Server } from "socket.io";
 import { config } from "dotenv";
 import Decimal from "decimal.js";
@@ -11,14 +10,18 @@ import type {
     serverState_t,
     workerData_t,
 } from "./src/types/types";
-import { zipAndDelete } from "./src/utils/zipAndDelete";
-import { cleanInputs } from "./src/utils/cleanInput";
-import { pathGenerator } from "./src/utils/pathGenerator";
-import { numThreads } from "./src/utils/numThreads";
-import { getTrajectories } from "./src/utils/getTrajectories";
-import { serverInitializer } from "./src/utils/serverInitializer";
+import { getCleanInput_u } from "./src/utils/getCleanInput_u";
+import { generatePaths_u } from "./src/utils/generatePaths_u";
+import { calcNumThreads_u } from "./src/utils/calcNumThreads_u";
+import { getDiskTrajectories_u } from "./src/utils/getDiskTrajectories_u";
+import { initializerServer_u } from "./src/utils/initializerServer_u";
 import { reqFile } from "./src/handlers/fileReq_h";
 import { reqTraject_h } from "./src/handlers/reqTraject_h";
+import { ConsolePrinter } from "./src/debug/ConsolePrinter";
+import { existsSync_w } from "./src/wrappers/existsSync_w";
+import { writeFileSync_w } from "./src/wrappers/writeFileSync_w";
+import { appendFileSync_w } from "./src/wrappers/appendFileSync_w";
+import { rmSync_w } from "./src/wrappers/rmSync_w";
 config(); // tell dotenv to check for env variables
 
 var serverState: serverState_t = {
@@ -34,7 +37,7 @@ const {
     PORT_i,
     trajectoriesDiskPath_i,
     orcaScriptDiskPath_i,
-} = serverInitializer();
+} = initializerServer_u();
 
 const io = new Server({
     cors: {
@@ -47,7 +50,7 @@ io.on("connection", (socket) => {
     // ========================================================
     // announce connection if debug is set to true
     if (debug_i) {
-        console.log("\x1b[32m%s\x1b[0m%s", `Connection: `, socket.id);
+        ConsolePrinter({ header: "C", message: socket.id });
     }
 
     // if a new user connects, let them know of current server state
@@ -70,7 +73,7 @@ io.on("connection", (socket) => {
             orcaConfig,
             userReqThreads,
         }: runOrca_t) => {
-            // =========================================
+            // ============================================
             // as soon as user enters, tell everyone that server is calculating
             serverState = {
                 isServerCalc: true,
@@ -81,14 +84,14 @@ io.on("connection", (socket) => {
 
             // clean inputs sent from user
             const { trajectoryDirName_r, trajectory_r, configStr_r } =
-                cleanInputs(trajectoryName, trajectory, orcaConfig);
+                getCleanInput_u(trajectoryName, trajectory, orcaConfig);
 
             // generate paths
             const { trajectoryDirPath_r, energyPathTxt_r, logFileDir_r } =
-                pathGenerator(trajectoryDirName_r, trajectoriesDiskPath_i);
+                generatePaths_u(trajectoryDirName_r, trajectoriesDiskPath_i);
 
             // cap the user requested number of threads
-            const numberThreads = numThreads(
+            const numberThreads = calcNumThreads_u(
                 trajectory_r.length,
                 userReqThreads,
                 maxNumThreads_i
@@ -102,33 +105,36 @@ io.on("connection", (socket) => {
 
             // if debug is true, print to console request overview and config values
             if (debug_i) {
-                console.log("\x1b[33m%s\x1b[0m", "Notice:");
-
                 // compute the amount of work
                 const totalWork = new Decimal(WPT).mul(numberThreads);
                 const remainder = new Decimal(totalWork).sub(
                     trajectory_r.length
                 );
 
-                console.table({
-                    "Trajectory name": trajectoryDirName_r,
-                    "# requested threads": userReqThreads,
-                    "Total molecules": trajectory_r.length,
-                    trajectory: "File",
-                    orcaConfig: "File",
-                    "----------------": "---------------------------",
-                    "Trajectory path": trajectoryDirPath_r,
-                    "Energy txt path": energyPathTxt_r,
-                    "Log files path": logFileDir_r,
-                    "---------------": "---------------------------",
-                    "Requested threads": userReqThreads,
-                    "Number of threads chosen": numberThreads,
-                    "Work per thread": WPT,
-                    "Total work": totalWork.toNumber(),
-                    "Equal work per thread": remainder.equals(0) ? "yes" : "no",
-                    // Remainder = (WPT * #threads) - #molecules
-                    Remainder: remainder.toNumber(),
-                });
+                ConsolePrinter(
+                    { header: "N", message: "" },
+                    {
+                        "Trajectory name": trajectoryDirName_r,
+                        "# requested threads": userReqThreads,
+                        "Total molecules": trajectory_r.length,
+                        trajectory: "File",
+                        orcaConfig: "File",
+                        "----------------": "---------------------------",
+                        "Trajectory path": trajectoryDirPath_r,
+                        "Energy txt path": energyPathTxt_r,
+                        "Log files path": logFileDir_r,
+                        "---------------": "---------------------------",
+                        "Requested threads": userReqThreads,
+                        "Number of threads chosen": numberThreads,
+                        "Work per thread": WPT,
+                        "Total work": totalWork.toNumber(),
+                        "Equal work per thread": remainder.equals(0)
+                            ? "yes"
+                            : "no",
+                        // Remainder = (WPT * #threads) - #molecules
+                        Remainder: remainder.toNumber(),
+                    }
+                );
             }
 
             // update users with new server state
@@ -139,6 +145,9 @@ io.on("connection", (socket) => {
             };
             io.emit("willStartCal", JSON.stringify(serverState));
 
+            // set the start time for calculating
+            const startTime = process.hrtime();
+
             for (let i = 0; i < trajectory_r.length; i += WPT) {
                 // if the working set, is greater than the length of molecules, shorten to length
                 const workSet = i + WPT;
@@ -148,7 +157,7 @@ io.on("connection", (socket) => {
                         : workSet;
 
                 // spawn/create a new worker thread to take care of portion of trajectory
-                const workerThread = new Worker("./src/utils/worker.ts", {
+                const workerThread = new Worker("./src/Worker/spawnWorker.ts", {
                     // pass the thread the required work
                     workerData: {
                         // total number of molecules
@@ -178,9 +187,27 @@ io.on("connection", (socket) => {
 
                                 // test if done computing all molecules
                                 if (
-                                    getNumFilesDir(energyPathTxt_r) ===
+                                    getNumMols_u(energyPathTxt_r) ===
                                     totalNumMolecules
                                 ) {
+                                    // get the time since started calculating
+                                    const endTime = process.hrtime(startTime);
+
+                                    // create decimals for both seconds and nanoseconds
+                                    const seconds = new Decimal(endTime[0]);
+                                    const nanoseconds = new Decimal(endTime[1]);
+
+                                    // Compute the amount of time which elapsed
+                                    const elapsedTime = seconds
+                                        .plus(nanoseconds.dividedBy(1e9))
+                                        .toFixed(3);
+
+                                    // Console
+                                    ConsolePrinter({
+                                        header: "S",
+                                        message: `Completed computation in ${elapsedTime}s`,
+                                    });
+
                                     serverState = {
                                         isServerCalc: false,
                                         serverNumMol: 0,
@@ -192,16 +219,20 @@ io.on("connection", (socket) => {
                                         JSON.stringify(serverState)
                                     );
 
-                                    // zip folder containing all log files
-                                    zipAndDelete(
-                                        trajectoryDirPath_r,
-                                        logFileDir_r
+                                    existsSync_w(
+                                        `cd ${trajectoryDirPath_r} && zip -r logFiles.zip logFiles`
                                     );
 
+                                    rmSync_w(logFileDir_r, {
+                                        recursive: true,
+                                        force: true,
+                                    });
+
                                     // get all trajectories to send to all listening users
-                                    const trajectoriesObj = getTrajectories(
-                                        trajectoriesDiskPath_i
-                                    );
+                                    const trajectoriesObj =
+                                        getDiskTrajectories_u(
+                                            trajectoriesDiskPath_i
+                                        );
 
                                     // emit to all listening users new trajectories
                                     io.emit(
@@ -230,13 +261,13 @@ io.on("connection", (socket) => {
                                 );
 
                                 // check if energy txt exists. If it does, then create a new, else append
-                                if (!existsSync(energyPathTxt_r)) {
-                                    writeFileSync(
+                                if (!existsSync_w(energyPathTxt_r)) {
+                                    writeFileSync_w(
                                         energyPathTxt_r,
                                         formattedStr
                                     );
                                 } else {
-                                    appendFileSync(
+                                    appendFileSync_w(
                                         energyPathTxt_r,
                                         formattedStr
                                     );
@@ -245,11 +276,10 @@ io.on("connection", (socket) => {
                                 break;
 
                             default:
-                                console.log(
-                                    "\x1b[31m%s\x1b[0m%s",
-                                    `ERROR: `,
-                                    "child message unknown"
-                                );
+                                ConsolePrinter({
+                                    header: "E",
+                                    message: "Child message unknown",
+                                });
                         }
                     }
                 );
@@ -260,7 +290,7 @@ io.on("connection", (socket) => {
     // listen for when a user disconnects
     socket.on("disconnect", () => {
         if (debug_i) {
-            console.log("\x1b[31m%s\x1b[0m%s", `Disconnection: `, socket.id);
+            ConsolePrinter({ header: "D", message: socket.id });
         }
     });
 });
