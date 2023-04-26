@@ -70,5 +70,5 @@ export interface getTrajectories_t {
     filesInside: string[];
     numMolecule: number;
     uploadDate: string;
-    partialPath: string;
+    trajectoryName: string;
 }
