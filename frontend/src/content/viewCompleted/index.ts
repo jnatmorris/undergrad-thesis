@@ -1,3 +1,3 @@
-import { CompletedView } from "./components/CompletedView";
+import { CompletedView } from "./components/completedView";
 
 export { CompletedView };

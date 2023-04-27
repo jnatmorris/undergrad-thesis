@@ -20,7 +20,7 @@ import { getDiskTrajectories_u } from "./src/utils/getDiskTrajectories_u";
 import { initializerServer_u } from "./src/utils/initializerServer_u";
 import { reqFile } from "./src/handlers/fileReq_h";
 import { reqTraject_h } from "./src/handlers/reqTraject_h";
-import { ConsolePrinter } from "./src/debug/ConsolePrinter";
+import { consolePrinter_d } from "./src/debug/consolePrinter_d";
 import { existsSync_w } from "./src/wrappers/existsSync_w";
 import { writeFileSync_w } from "./src/wrappers/writeFileSync_w";
 import { appendFileSync_w } from "./src/wrappers/appendFileSync_w";
@@ -54,7 +54,7 @@ io.on("connection", (socket) => {
     // ========================================================
     // announce connection if debug is set to true
     if (debug_i) {
-        ConsolePrinter({ header: "C", message: socket.id });
+        consolePrinter_d({ header: "C", message: socket.id });
     }
 
     // if a new user connects, let them know of current server state
@@ -112,7 +112,7 @@ io.on("connection", (socket) => {
                     trajectory_r.length
                 );
 
-                ConsolePrinter(
+                consolePrinter_d(
                     { header: "N", message: "" },
                     {
                         "Trajectory name": trajectoryDirName_r,
@@ -204,7 +204,7 @@ io.on("connection", (socket) => {
                                         .toFixed(3);
 
                                     // Console
-                                    ConsolePrinter({
+                                    consolePrinter_d({
                                         header: "S",
                                         message: `Completed computation in ${elapsedTime}s`,
                                     });
@@ -277,7 +277,7 @@ io.on("connection", (socket) => {
                                 break;
 
                             default:
-                                ConsolePrinter({
+                                consolePrinter_d({
                                     header: "E",
                                     message: "Child message unknown",
                                 });
@@ -291,7 +291,7 @@ io.on("connection", (socket) => {
     // listen for when a user disconnects
     socket.on("disconnect", () => {
         if (debug_i) {
-            ConsolePrinter({ header: "D", message: socket.id });
+            consolePrinter_d({ header: "D", message: socket.id });
         }
     });
 });
