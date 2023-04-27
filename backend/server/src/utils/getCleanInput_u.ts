@@ -1,10 +1,10 @@
-import { cleanInput_t } from "../types/types";
+import { getCleanInput_t } from "../types/types";
 
 export const getCleanInput_u = (
     trajectoryName: string,
     trajectoryFile: Buffer,
     orcaConfig: Buffer
-): cleanInput_t => {
+): getCleanInput_t => {
     // clean up trajectory and put back together
     const trajectory_r = trajectoryFile
         .toString("utf-8")
@@ -42,13 +42,15 @@ export const getCleanInput_u = (
         configStrArr.pop();
     }
 
-    // join config array back together
+    // join config array back together. Same as prior but without the last line
     const configStr_r = configStrArr.join("\n");
 
     return {
-        trajectoryDirName_r: trajectoryName
-            .replace(".xyz", "")
-            .replace(".txt", ""),
+        /* 
+            remove the .xyz when making the directory name as it comes from the 
+            uploaded trajectory file's name which has .xyz
+        */
+        trajectoryDirName_r: trajectoryName.replace(".xyz", ""),
         trajectory_r,
         configStr_r,
     };
