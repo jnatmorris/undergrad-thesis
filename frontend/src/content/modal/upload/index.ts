@@ -3,7 +3,7 @@ import { TrajectoryFileInput_c } from "./components/trajectoryFileInput_c";
 import { ConfigFileInput_c } from "./components/configFileInput_c";
 import { MoleculeViewer_c } from "./components/moleculeViewer_c";
 import { UploadModal_c } from "./components/uploadModal_c";
-import { useUserInputStore } from "./Zustand/useUserInputStore";
+import { useUserInputStore } from "./zustand/useUserInputStore";
 import { SingleElem_c } from "./components/singleElem_c";
 import { CheckValidExt } from "./utils/checkValidExt";
 

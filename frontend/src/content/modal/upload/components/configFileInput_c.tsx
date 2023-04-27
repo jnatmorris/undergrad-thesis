@@ -1,7 +1,7 @@
 import React from "react";
 import { WrenchScrewdriverIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import { useUserInputStore } from "../Zustand/useUserInputStore";
+import { useUserInputStore } from "../zustand/useUserInputStore";
 import { CheckValidExt } from "..";
 
 interface Props {}
