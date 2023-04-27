@@ -1,44 +1,51 @@
-import { getTrajectories_t } from "../types/types";
+import type { getDiskTrajectories_t } from "../types/types";
 import { getNumMols_u } from "./getNumMols_u";
 import { readdirSync_w } from "../wrappers/readdirSync_w";
 import { statSync_w } from "../wrappers/statSync_w";
 import { existsSync_w } from "../wrappers/existsSync_w";
 
 export const getDiskTrajectories_u = (
-    trajectoriesDiskPath: string
-): getTrajectories_t[] => {
-    // read directory
-    const trajectoriesAndData = readdirSync_w(trajectoriesDiskPath, {
+    storageDiskPath: string
+): getDiskTrajectories_t[] => {
+    // read directory of trajectories
+    const trajectoriesAndData = readdirSync_w(storageDiskPath, {
         withFileTypes: false,
-    }).map((trajectoryNameStr) => {
-        // get the name of the trajectories
-        const moleculeFolderPath = `${trajectoriesDiskPath}/${trajectoryNameStr}`;
+    }).map((trajectoryDirName) => {
+        // format path for single molecule's directory
+        const moleculeDirPath = `${storageDiskPath}/${trajectoryDirName}`;
 
-        // test what files inside of the molecule folder
-        const filesInside = readdirSync_w(moleculeFolderPath);
+        // get which files inside of molecule directory
+        const filesInside = readdirSync_w(moleculeDirPath);
 
-        const filePath = `${trajectoriesDiskPath}/${trajectoryNameStr}/energies.txt`;
+        // format path for energy within directory
+        const energiesPath = `${storageDiskPath}/${trajectoryDirName}/energies.txt`;
 
-        if (existsSync_w(filePath)) {
+        // if the energies path exists, then get data and return
+        if (existsSync_w(energiesPath)) {
             // get the number of molecules
-            const numMolecule = getNumMols_u(filePath);
+            const numMolecule = getNumMols_u(energiesPath);
 
             // get the time of file creation
-            const { birthtime } = statSync_w(filePath);
+            const { birthtime } = statSync_w(energiesPath);
 
             return {
-                moleculeName: trajectoryNameStr,
-                filesInside,
+                trajectoryDirName,
                 numMolecule,
+                filesInside,
                 uploadDate: birthtime.toISOString(),
-                trajectoryName: trajectoryNameStr,
             };
         }
     });
 
-    const trajectoriesValid = trajectoriesAndData.filter(
+    /* 
+        Filter out all values which are undefined. Energy files will be undefined when the trajectory is being computed
+        but no molecules have finished being calculated. This is a corner case which can cause a crash. Able to cast 
+        without worry as filter out undefined values. 
+    */
+    const validTrajectories = trajectoriesAndData.filter(
         (x) => x !== undefined
-    ) as getTrajectories_t[];
+    ) as getDiskTrajectories_t[];
 
-    return trajectoriesValid;
+    // return valid trajectories
+    return validTrajectories;
 };
