@@ -1,18 +1,21 @@
 import { Worker } from "worker_threads";
-import { getNumMols_u } from "./src/utils/getNumMols_u";
 import { Server } from "socket.io";
 import { config } from "dotenv";
 import Decimal from "decimal.js";
 import type {
-    runOrca_t,
     threadRes_t,
     threadDone_t,
     serverState_t,
     workerData_t,
+    CToSEvents_t,
+    SToCEvents_t,
+    InSEvents_t,
+    SocketData_t,
 } from "./src/types/types";
 import { getCleanInput_u } from "./src/utils/getCleanInput_u";
 import { generatePaths_u } from "./src/utils/generatePaths_u";
 import { calcNumThreads_u } from "./src/utils/calcNumThreads_u";
+import { getNumMols_u } from "./src/utils/getNumMols_u";
 import { getDiskTrajectories_u } from "./src/utils/getDiskTrajectories_u";
 import { initializerServer_u } from "./src/utils/initializerServer_u";
 import { reqFile } from "./src/handlers/fileReq_h";
@@ -40,7 +43,7 @@ const {
     orcaScriptDiskPath_i,
 } = initializerServer_u();
 
-const io = new Server({
+const io = new Server<CToSEvents_t, SToCEvents_t, InSEvents_t, SocketData_t>({
     cors: {
         origin: "*",
     },
@@ -70,12 +73,7 @@ io.on("connection", (socket) => {
     // listen for if a user requests a new calculation
     socket.on(
         "newCalcReq",
-        ({
-            trajectoryName,
-            trajectory,
-            orcaConfig,
-            userReqThreads,
-        }: runOrca_t) => {
+        ({ trajectoryName, trajectory, orcaConfig, userReqThreads }) => {
             // ============================================
             // as soon as user enters, tell everyone that server is calculating
             serverState = {
