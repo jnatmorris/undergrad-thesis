@@ -17,63 +17,66 @@ const {
     configStr_r,
 } = workerData as workerData_t;
 
+// for each of the molecules in the set for the thread to compute...
 threadMolecules.forEach((fileStr, index) => {
+    /*
+        1. Make molecule directory to do calculations within
+        2. Create the config and write into directory
+        3. Write the single molecule into file in directory
+        4. Run orca passing the path to molecule and config
+        5. Read items in molecule directory and remove all that are not .log
+        6. Move the .log file one directory lower in the tree
+        7. Remove the molecule folder
+        8. Get the values from Orca 
+        9. message to parent thread
+        10. When ALL molecules are finished, let parent know that the thread is completely finished
+    */
+
     const moleculeNumber = index + startIndex;
 
-    // ===================================================
-    // make molecule folder
+    // 1. make molecule folder
     const moleculeFolderPath = `${trajectoryDirPath_r}/logFiles/molecule_${moleculeNumber}`;
     mkdirSync_w(moleculeFolderPath);
 
-    // ===================================================
-    // make config and write config file
-
+    // 2. write config to path
     const moleculePath = `./${trajectoryDirPath_r}/logFiles/molecule_${moleculeNumber}/molecule.xyz`;
     const configFile = `${configStr_r}\n\n* xyzfile 0 1 ${moleculePath}\n`;
     const configPath = `${moleculeFolderPath}/orcaConfig.xyz.inp`;
-
-    // write config
     writeFileSync_w(configPath, configFile);
-    // write file
+
+    // 3. wite molecule to path
     writeFileSync_w(moleculePath, fileStr);
 
-    // ===================================================
-    // run orca and pass the config file path
+    // 4. run orca and pass the config file path
     const orcaOutput = execSync_w(
         `bash ${orcaScriptDiskPath_i}/runOrca.sh ${configPath} ${moleculeFolderPath}/temp_${moleculeNumber}.log`
     );
 
-    // ===================================================
-    // cleanup
-
+    // 5. Remove not .log files
     const filesInDir = readdirSync_w(moleculeFolderPath);
-
     const fileIndex = filesInDir.findIndex((x) => extname(x) === ".log");
 
-    // move file
+    // 6. Move .log file
     renameSync_w(
         `${moleculeFolderPath}/${filesInDir[fileIndex]}`,
         `${trajectoryDirPath_r}/logFiles/${filesInDir[fileIndex]}`
     );
 
+    // 7. Remove molecule folder
     rmSync_w(moleculeFolderPath, { recursive: true, force: true });
 
-    // // ===================================================
-    // get output and format
-
+    // 8. get output and format
     const cleanedOutput = orcaOutput.split("\n").map((x) => x.trim());
-
     const formattedStr = `Molecule:${moleculeNumber},Excited Energy:${cleanedOutput[0]},Ground Energy:${cleanedOutput[1]}\n`;
 
-    // ===================================================
-    // message parent
-
+    // 10. message parent
     parentPort?.postMessage({
         finished: false,
         formattedStr,
     });
 });
 
+// 11. message parent when all completed
 parentPort?.postMessage({
     finished: true,
     totalNumMolecules,
