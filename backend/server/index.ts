@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
                 serverNumMol: 0,
                 serverProgress: 0,
             };
-            io.emit("willStartCal", JSON.stringify(serverState));
+            io.emit("updatedServerState", JSON.stringify(serverState));
 
             // clean inputs sent from user
             const { trajectoryDirName_r, trajectory_r, configStr_r } =
@@ -144,7 +144,7 @@ io.on("connection", (socket) => {
                 serverNumMol: trajectory_r.length,
                 serverProgress: 0,
             };
-            io.emit("willStartCal", JSON.stringify(serverState));
+            io.emit("updatedServerState", JSON.stringify(serverState));
 
             // set the start time for calculating
             const startTime = process.hrtime();
@@ -216,7 +216,7 @@ io.on("connection", (socket) => {
                                     };
 
                                     io.emit(
-                                        "sendProgress",
+                                        "updatedServerState",
                                         JSON.stringify(serverState)
                                     );
 
@@ -257,7 +257,7 @@ io.on("connection", (socket) => {
 
                                 // send an update to all clients
                                 io.emit(
-                                    "sendProgress",
+                                    "updatedServerState",
                                     JSON.stringify(serverState)
                                 );
 
