@@ -1,11 +1,10 @@
-import React from "react";
 import { create } from "zustand";
 import {
     useUserInputStoreActions_t,
     useUserInputStoreTrajectoryState_t,
     trajectoryData_t,
     useUserInputStoreState_t,
-} from "..";
+} from "../..";
 
 export const useUserInputStore = create<
     useUserInputStoreState_t & trajectoryData_t & useUserInputStoreActions_t

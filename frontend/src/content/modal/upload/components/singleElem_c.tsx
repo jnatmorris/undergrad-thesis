@@ -1,7 +1,7 @@
 import React from "react";
 import Decimal from "decimal.js";
 import { Vector3 } from "three";
-import { MoleculeViewActions_t } from "..";
+import { MoleculeViewActions_t } from "../..";
 import stc from "string-to-color";
 
 interface Props {

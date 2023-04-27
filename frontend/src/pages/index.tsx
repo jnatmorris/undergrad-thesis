@@ -9,7 +9,7 @@ import classnames from "classnames";
 import { useSocket, useSocketStore } from "../content/socket";
 import { Modal_c } from "../content/modal";
 import { CompletedView } from "../content/viewCompleted";
-import { useUserInputStore } from "../content/modal/upload";
+import { useUserInputStore } from "../content/modal";
 import { ChevronDoubleRightIcon } from "@heroicons/react/24/outline";
 
 const Files: NextPage = () => {

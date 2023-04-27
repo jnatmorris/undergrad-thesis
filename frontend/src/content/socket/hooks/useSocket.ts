@@ -7,7 +7,7 @@ import type {
     trajectoriesOnDiskBaseEmit_t,
 } from "..";
 import { useSocketStore } from "..";
-import { useUserInputStore } from "../../modal/upload";
+import { useUserInputStore } from "../../modal";
 import { saveAs } from "file-saver";
 
 // connect to socket server

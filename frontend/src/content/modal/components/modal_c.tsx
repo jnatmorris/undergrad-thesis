@@ -1,5 +1,5 @@
 import React from "react";
-import { UploadModal_c } from "../upload/index";
+import { UploadModal_c } from "..";
 import { ArrowsPointingInIcon } from "@heroicons/react/24/outline";
 import { useSocketStore } from "../../socket";
 import classnames from "classnames";

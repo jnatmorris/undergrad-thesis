@@ -7,8 +7,8 @@ import {
     ChevronLeftIcon,
 } from "@heroicons/react/24/solid";
 import classNames from "classnames";
-import type { MoleculeViewActions_t, molViewerState_t } from "..";
-import { SingleElem_c } from "..";
+import { SingleElem_c } from "../..";
+import type { MoleculeViewActions_t, molViewerState_t } from "../..";
 
 interface Props {
     trajectoriesStr: string[][];

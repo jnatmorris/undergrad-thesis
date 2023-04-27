@@ -1,7 +1,5 @@
 import { useSocket } from "./hooks/useSocket";
 import { useSocketStore } from "./zustand/useSocketStore";
-export { useSocket, useSocketStore };
-
 import type {
     trajectoriesOnDiskBase_t,
     trajectoriesOnDiskBaseState_t,
@@ -9,11 +7,12 @@ import type {
     useSocketStoreActions_t,
     serverState_t,
 } from "./zustand/types/types";
-
 import type {
     resFile_t,
     trajectoriesOnDiskBaseEmit_t,
 } from "./hooks/types/types";
+
+export { useSocket, useSocketStore };
 
 export type {
     trajectoriesOnDiskBase_t,

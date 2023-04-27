@@ -1,4 +1,4 @@
-import type { trajectoriesOnDiskBase_t } from "../../zustand/types/types";
+import type { trajectoriesOnDiskBase_t } from "../../";
 
 // type used for the incoming data from socket
 export interface trajectoriesOnDiskBaseEmit_t extends trajectoriesOnDiskBase_t {

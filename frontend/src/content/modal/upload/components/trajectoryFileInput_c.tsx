@@ -1,8 +1,7 @@
 import React from "react";
 import { DocumentPlusIcon } from "@heroicons/react/24/outline";
 import classNames from "classnames";
-import { useUserInputStore } from "../zustand/useUserInputStore";
-import { CheckValidExt } from "..";
+import { CheckValidExt, useUserInputStore } from "../..";
 
 interface Props {}
 

@@ -1,6 +1,10 @@
 import React from "react";
-import { TrajectoryFileInput_c, ConfigFileInput_c, MoleculeViewer_c } from "..";
-import { useUserInputStore } from "../zustand/useUserInputStore";
+import {
+    useUserInputStore,
+    TrajectoryFileInput_c,
+    ConfigFileInput_c,
+    MoleculeViewer_c,
+} from "../..";
 
 interface Props {}
 
