@@ -83,8 +83,8 @@ export interface getDiskTrajectories_t {
 export interface SToCEvents_t {
     haveCurrentJob: (serverState: string) => void;
     resTrajectories: (trajectories: string) => void;
-    willStartCal: (serverState: string) => void;
-    sendProgress: (serverState: string) => void;
+    updatedServerState: (serverState: string) => void;
+    updatedServerState: (serverState: string) => void;
     resFile: ({ fileName, file }: { fileName: string; file: Buffer }) => void;
 }
 
