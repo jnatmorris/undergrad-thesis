@@ -1,4 +1,4 @@
-# Thesis Front-end Portion
+# Bachelor Thesis in Computer Science | Front-end
 
 ## Development Server
 

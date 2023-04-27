@@ -1,4 +1,4 @@
-# Back-end Portion
+# Bachelor Thesis in Computer Science | Back-end
 
 ### Naming Styles of files, functions, and variables
 
