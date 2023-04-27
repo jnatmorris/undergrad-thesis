@@ -1,8 +1,22 @@
-export interface runOrca_t {
-    trajectoryName: string;
-    trajectory: Buffer;
-    orcaConfig: Buffer;
-    userReqThreads: number;
+// ===========================================
+// ConsolePrinter types for messageInfo and object in table
+
+export interface messageInfo_t {
+    header: "S" | "N" | "E" | "C" | "D";
+    message: string;
+}
+
+export interface tableObj_t {
+    [key: string]: any;
+}
+
+// ===========================================
+// types for response from worker threads
+
+export interface threadRes_t {
+    finished: false;
+    moleculeNumber: number;
+    formattedStr: string;
 }
 
 export interface threadDone_t {
@@ -12,39 +26,30 @@ export interface threadDone_t {
     totalNumMolecules: number;
 }
 
-export interface messageInfo_t {
-    header: "S" | "N" | "E" | "C" | "D";
-    message: string;
+// ===========================================
+// type passed to worker thread
+
+export interface workerData_t {
+    totalNumMolecules: number;
+    orcaScriptDiskPath_i: string;
+    startIndex: number;
+    threadMolecules: string[];
+    trajectoryDirPath_r: string;
+    configStr_r: string;
 }
 
-export interface obj_t {
-    [key: string]: any;
-}
-
-export interface threadRes_t {
-    finished: false;
-    moleculeNumber: number;
-    formattedStr: string;
-}
-
+// ===========================================
+// type for server state
 export interface serverState_t {
     isServerCalc: boolean;
     serverProgress: number;
     serverNumMol: number;
 }
 
-export interface workerData_t {
-    orcaScriptDiskPath_i: string;
-    threadNum: number;
-    trajectoryDirPath_r: string;
-    startIndex: number;
-    endIndex: number;
-    totalNumMolecules: number;
-    threadMolecules: string[];
-    configStr_r: string;
-}
+// ===========================================
+// return types for utility functions
 
-export interface serverInitializer_t {
+export interface initializerServer_t {
     maxFileSize_i: number;
     maxNumThreads_i: number;
     debug_i: boolean;
@@ -53,22 +58,47 @@ export interface serverInitializer_t {
     orcaScriptDiskPath_i: string;
 }
 
-export interface cleanInput_t {
+export interface getCleanInput_t {
     trajectoryDirName_r: string;
     trajectory_r: string[];
     configStr_r: string;
 }
 
-export interface pathGenerator_t {
+export interface generatePaths_t {
     trajectoryDirPath_r: string;
     energyPathTxt_r: string;
     logFileDir_r: string;
 }
 
-export interface getTrajectories_t {
-    moleculeName: string;
+export interface getDiskTrajectories_t {
+    trajectoryDirName: string;
     filesInside: string[];
     numMolecule: number;
     uploadDate: string;
-    trajectoryName: string;
 }
+
+// ===========================================
+// socket server types
+
+export interface SToCEvents_t {
+    haveCurrentJob: (serverState: string) => void;
+    resTrajectories: (trajectories: string) => void;
+    willStartCal: (serverState: string) => void;
+    sendProgress: (serverState: string) => void;
+    resFile: ({ fileName, file }: { fileName: string; file: Buffer }) => void;
+}
+
+export interface CToSEvents_t {
+    reqTrajectories: () => void;
+    reqFile: (filePath: string) => void;
+    newCalcReq: (obj: {
+        trajectoryName: string;
+        trajectory: Buffer;
+        orcaConfig: Buffer;
+        userReqThreads: number;
+    }) => void;
+}
+
+export interface InSEvents_t {}
+
+export interface SocketData_t {}
