@@ -1,20 +1,18 @@
-import type { serverInitializer_t } from "../types/types";
+import { exit } from "process";
+import type { initializerServer_t } from "../types/types";
 import { ConsolePrinter } from "../debug/ConsolePrinter";
 import { existsSync_w } from "../wrappers/existsSync_w";
 import { mkdirSync_w } from "../wrappers/mkdirSync_w";
 
-export const initializerServer_u = (): serverInitializer_t => {
-    // ================================================
-    // check env file and create variables
-
-    // check if all env variables are set. If one is not, exit
+export const initializerServer_u = (): initializerServer_t => {
+    // check if all env variables are set. If one is not, exit.
     if (
         !process.env.maxFileSize ||
         !process.env.maxNumThreads ||
         !process.env.debug ||
         !process.env.PORT ||
-        !process.env.trajectoriesDiskPath ||
-        !process.env.orcaScriptDiskPath
+        !process.env.storageDiskPath ||
+        !process.env.orcaDiskPath
     ) {
         ConsolePrinter({
             header: "E",
@@ -22,7 +20,7 @@ export const initializerServer_u = (): serverInitializer_t => {
         });
 
         // exit
-        process.exit(1);
+        exit(1);
     }
 
     // get config values
@@ -31,10 +29,9 @@ export const initializerServer_u = (): serverInitializer_t => {
     const debug_i =
         process.env.debug && process.env.debug === "true" ? true : false;
     const PORT_i = Number(process.env.PORT);
-    const trajectoriesDiskPath_i = process.env.trajectoriesDiskPath;
-    const orcaScriptDiskPath_i = process.env.orcaScriptDiskPath;
+    const trajectoriesDiskPath_i = process.env.storageDiskPath;
+    const orcaScriptDiskPath_i = process.env.orcaDiskPath;
 
-    // ================================================
     // print to the console for the user
     ConsolePrinter(
         {
@@ -51,13 +48,10 @@ export const initializerServer_u = (): serverInitializer_t => {
         }
     );
 
-    // ================================================
-    // make files directory
-
+    // Check if directory exists to store calculations. If not, make a new one
     if (!existsSync_w(trajectoriesDiskPath_i)) {
         mkdirSync_w(trajectoriesDiskPath_i);
     }
-    // ================================================
 
     return {
         maxFileSize_i,
