@@ -26,3 +26,9 @@ yarn install
 ```bash
 yarn dev
 ```
+
+### To Check Types
+
+```bash
+yarn typeCheck
+```
