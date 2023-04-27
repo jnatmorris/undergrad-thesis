@@ -1,6 +1,6 @@
 import { exit } from "process";
 import type { initializerServer_t } from "../types/types";
-import { ConsolePrinter } from "../debug/ConsolePrinter";
+import { consolePrinter_d } from "../debug/consolePrinter_d";
 import { existsSync_w } from "../wrappers/existsSync_w";
 import { mkdirSync_w } from "../wrappers/mkdirSync_w";
 
@@ -14,7 +14,7 @@ export const initializerServer_u = (): initializerServer_t => {
         !process.env.storageDiskPath ||
         !process.env.orcaDiskPath
     ) {
-        ConsolePrinter({
+        consolePrinter_d({
             header: "E",
             message: "Missing or unable to read environment variables",
         });
@@ -33,7 +33,7 @@ export const initializerServer_u = (): initializerServer_t => {
     const orcaScriptDiskPath_i = process.env.orcaDiskPath;
 
     // print to the console for the user
-    ConsolePrinter(
+    consolePrinter_d(
         {
             header: "S",
             message: "Found and loaded environment variables",
