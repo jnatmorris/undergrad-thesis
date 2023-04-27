@@ -19,7 +19,8 @@
     ],
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon - exec 'ts-node' index.ts"
+        "dev": "nodemon - exec 'ts-node' index.ts",
+        "typeCheck": "tsc --noEmit index.ts"
     },
     "dependencies": {
         "decimal.js": "^10.4.3",
@@ -30,6 +31,6 @@
         "typescript": "^5.0.4"
     },
     "devDependencies": {
-        "@types/node": "^18.16.0"
+        "@types/node": "^18.16.1"
     }
 }
