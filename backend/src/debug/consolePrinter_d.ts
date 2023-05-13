@@ -16,7 +16,7 @@ export const consolePrinter_d = (
 
         // Success
         case "S":
-            console.log("\n\x1b[32m%s\x1b[0m%s", "Success:", ` ${message}`);
+            console.log("\x1b[32m%s\x1b[0m%s", "Success:", ` ${message}`);
             break;
 
         // Connection
@@ -36,8 +36,5 @@ export const consolePrinter_d = (
     }
 
     // if table passed, enter values by spreading object
-    if (tableObj) {
-        console.table({ ...tableObj });
-        console.log("\n");
-    }
+    if (tableObj) console.table({ ...tableObj });
 };
