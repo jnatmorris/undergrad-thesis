@@ -15,24 +15,18 @@ export interface tableObj_t {
 
 export interface threadRes_t {
     finished: false;
-    moleculeNumber: number;
     formattedStr: string;
 }
 
 export interface threadDone_t {
     finished: true;
-    threadNum: number;
-    timeElapsed: string;
-    totalNumMolecules: number;
 }
 
 // ===========================================
 // type passed to worker thread
 
 export interface workerData_t {
-    totalNumMolecules: number;
     orcaScriptDiskPath_i: string;
-    startIndex: number;
     threadMolecules: string[];
     trajectoryDirPath_r: string;
     configStr_r: string;
@@ -83,7 +77,6 @@ export interface getDiskTrajectories_t {
 export interface SToCEvents_t {
     haveCurrentJob: (serverState: string) => void;
     resTrajectories: (trajectories: string) => void;
-    updatedServerState: (serverState: string) => void;
     updatedServerState: (serverState: string) => void;
     resFile: ({ fileName, file }: { fileName: string; file: Buffer }) => void;
 }
