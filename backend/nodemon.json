@@ -1,5 +1,6 @@
 {
-    "watch": ["./**/*"],
+    "ignore": ["node_modules", "files"],
+    "watch": ["index.ts", "./src/**/*"],
     "ext": "ts",
     "exec": "ts-node index.ts",
     "events": {
