@@ -74,7 +74,6 @@ io.on("connection", (socket) => {
     socket.on(
         "newCalcReq",
         ({ trajectoryName, trajectory, orcaConfig, userReqThreads }) => {
-            // ============================================
             // as soon as user enters, tell everyone that server is calculating
             serverState = {
                 isServerCalc: true,
