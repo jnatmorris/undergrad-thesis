@@ -29,14 +29,15 @@ cd backend/ && yarn install
 ```
 
 3. Set server configuration
-4. Start back-end server
 
-```
-cd backend/ && yarn dev
-```
-
-5. Build and start front-end server
+4. Build and start front-end server
 
 ```
 cd frontend/ && yarn build && yarn start
+```
+
+5. Start back-end server
+
+```
+cd backend/ && yarn dev
 ```
