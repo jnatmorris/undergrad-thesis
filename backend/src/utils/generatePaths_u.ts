@@ -22,7 +22,7 @@ export const generatePaths_u = (
     const energyPathTxt_r = `${trajectoryDirPath_r}/energies.txt`;
     const logFileDir_r = `${trajectoryDirPath_r}/logFiles`;
 
-    // if the log file does not exist, then make it
+    // if the log file directory does not exist, then make it
     if (!existsSync_w(logFileDir_r)) {
         mkdirSync_w(logFileDir_r);
     }
