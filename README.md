@@ -11,7 +11,7 @@ Web-based service for training data generation in trajectory-based molecular mac
 -   Name: Justin Morris
 -   Major: Computer Science
 -   University: Constructor University (Formally Jacobs University)
--   Thesis Submission: May 16th, 2023
+-   Thesis Submission: May 15th, 2023
 -   Supervisor: Prof. Dr. Peter Zaspel
 
 ### How to run
